@@ -1,0 +1,26 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+
+    <div class="announcements-container">
+        <h2 class="display-2h page-title">Announcements</h2>
+        {% if user.user_type == 'inc' %}
+            <a href="{% url 'addannouncement' %}"><button class="btn submit-btn announcement-btn">Add Announcement</button></a>
+        {% endif %}
+        {% for announcement in announcements %}
+            {% if user.user_type == announcement.for_user or user.user_type == 'inc' %}
+               
+            <div class="announcement">
+                    <h3 class="announcement-title display-2">{{ announcement.title }}</h3>
+                    <p class="announcement-date"><b>{{ announcement.date }}</b></p>
+                    <p class="announcement-content">{{ announcement.description }}</p>
+                    {% if user.user_type == 'inc' %}
+                        <a href="{% url 'deleteannouncement' announcement.id %}"><button class="btn submit-btn announcement-btn del">Delete</button></a>
+                    {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+
+{% endblock %}

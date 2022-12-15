@@ -1,0 +1,50 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+
+    <div class="announcements-container">
+        <h2 class="display-2h">Weekend Buses</h2>
+        {% if user.user_type == 'inc' %}
+            <a href="{% url 'addwbus' %}"><button class="btn submit-btn announcement-btn">Add Weekend Bus</button></a>
+        {% endif %}
+        <div class="bus-info-container">
+            {% if slots %}
+                {% for slot in slots %}
+                    <div class="bus-info">
+                        <div class="bus-info-left">
+                            <h3 class="display-2h">{{ slot.slot.bus }}</h3>
+                        </div>
+                        <div class="bus-info-mid">
+                            <p class="display-1">{{ slot.slot.route }}</p>
+                            <p class="display-1">{{ slot.slot.date }}</p>
+                            <p class="display-1">{{ slot.slot.time }}</p>
+                        </div>
+                        {% if user.user_type != 'inc' %}
+                            {% if user.username not in slot.users %}
+                                <div class="bus-info-right">
+                                    <a href="{% url 'bookbus' slot.slot.id user.id %}"><button class="btn submit-btn announcement-btn">Book</button></a>
+                                </div>
+                            {% else %}
+                                <div class="bus-info-right">
+                                    <a href="{% url 'cancelbus' slot.slot.id user.id %}"><button class="btn cancel-btn announcement-btn">Cancel</button></a>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        
+                        {% if user.user_type == 'inc' %}
+                            <div class="bus-info-right">
+                                <a href="{% url 'deletebus' slot.slot.id %}"><button class="btn delete-btn announcement-btn">Delete</button></a>
+                                <a href="{% url 'viewbookings' slot.slot.id %}"><button class="btn announcement-btn submit-btn">View Bookings</button></a>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                {% endfor %}
+            {% else %}
+                <h2>No available buses</h2>
+            {% endif %}
+        </div>
+        
+    </div>
+
+{% endblock %}

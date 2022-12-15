@@ -1,0 +1,29 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+
+<div class="announcements-container">
+    <h2 class="display-2h">Add Weekend Buses</h2>
+    <form class="form bus-form" action="{% url 'addwbus' %}" method="POST">
+        {% csrf_token %}
+
+        <div class="form-element bus-inputs">
+            {{ form.bus }}
+            {{ form.route }}
+        </div>
+
+        <div class="form-element date-element">
+            {{ form.date }}
+        </div>
+
+        <div class="form-element">
+            {{ form.time }}
+        </div>
+
+        <div class="form-element">
+            <button id="bus-btn" class="btn submit-btn announcement-btn" type="submit">Add Bus</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

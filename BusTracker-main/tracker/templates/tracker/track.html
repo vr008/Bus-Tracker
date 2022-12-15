@@ -1,0 +1,193 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+
+{% block js %}
+{% endblock %}
+
+{% block content %}
+    <div class="welcome-content">
+        <h2 class="welcome-item display-2">
+            Never miss your bus again
+        </h2>
+        <h2 class="welcome-item display-1">
+            Track your bus here...
+        </h2>
+        <div class="route-selecter">
+            {{ form.route  }}
+            <button id="get-route" class="btn submit-btn location-btn">Get Location</button><br><br>
+            <p>Are you on the bus?</p>
+            <label class="switch">
+                <input id="set-location" type="checkbox">
+                <span class="slider round"></span>
+            </label>
+            <!-- <button id="set-location" class="btn submit-btn location-btn" style="background-color: rgb(129, 129, 0);">Set Location</button> -->
+        </div>
+    </div>
+    <div id="map">
+
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw0ddIErnntB_jNO1mEbWTg7tZya699cQ&libraries=places"></script>
+    <script defer>
+        let pos;
+        let bus_marker;
+        const SSN = { lat: 12.751817768930716, lng: 80.20390072611363 };
+        const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 13,
+                center: SSN
+            });
+        function getlocation(route){
+            let id;
+            let options;
+            const target = { latitude: 12.751817768930716, longitude: 80.20390072611363 };
+        
+            function success(pos) {
+                const crd = pos.coords;
+                console.log(pos.coords);
+                fetch(`setlocation/${route}`,{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        'latitude': crd.latitude,
+                        'longitude': crd.longitude
+                    })
+                })
+
+
+
+                if (document.getElementById('set-location').value == "on"){
+                    console.log("Locaiton turned off");
+                    navigator.geolocation.clearWatch(id);
+                }
+
+                if (target.latitude === crd.latitude && target.longitude === crd.longitude) {
+                    console.log('Congratulations, you reached the target');
+                    navigator.geolocation.clearWatch(id);
+                }
+            }
+
+            function error(err) {
+                console.error(`ERROR(${err.code}): ${err.message}`);
+            }
+
+            options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+
+            id = navigator.geolocation.watchPosition(success, error, options);
+
+        }
+
+
+        const setLocation = document.getElementById('set-location');
+        setLocation.onclick = () => {
+            const route = document.getElementById('routeNo').value;
+            console.log(route);
+            if (route === ''){
+                alert('Please select a route');
+            }
+            else{
+                console.log(setLocation.value)
+                if (setLocation.value === 'on'){
+                    setLocation.value = 'off';
+                    getlocation(route);
+                }
+                else if (setLocation.value === 'off'){
+                    setLocation.value = 'on';
+                    // getlocation(route);
+                    
+                }
+            }
+            // getlocation(route);
+        }
+
+        const getRoute = document.getElementById('get-route');
+        getRoute.onclick = () => {
+            const route = document.getElementById('routeNo').value;
+            if (route === ''){
+                alert('Please select a route');
+            }
+            else{
+                fetch(`/route/${route}`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+
+                    calcRoute(data.lat, data.lng, data.waypoints, route);
+                })
+            }
+
+        }
+        
+        
+
+        function calcRoute (slat, slng, all_waypoints, route){
+            const source = { lat: slat, lng: slng}
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: source,
+            });
+
+            let directionService = new google.maps.DirectionsService();
+            let directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers: true });
+
+            let waypoints = [];
+
+            for (let step = 0; step < all_waypoints.length; step++) {
+                  waypoints.push({
+                    location: new google.maps.LatLng(all_waypoints[step].lat, all_waypoints[step].lng),
+                    stopover: true
+                  })
+            }
+            request = {
+                origin: source,
+                destination: SSN,
+                travelMode: 'DRIVING',
+                waypoints: waypoints,
+            };
+            directionService.route(request, (result, status) => {
+                if (status == 'OK') {
+                    directionsRenderer.setDirections(result);
+                }
+            });
+
+            for (let step = 0; step < all_waypoints.length; step++) {
+                const marker = new google.maps.Marker({
+                position: {lat: all_waypoints[step].lat , lng: all_waypoints[step].lng},
+                icon: "{% static 'stop.png' %}",
+                map: map,
+            });
+            }
+            
+            const marker = new google.maps.Marker({
+                position: source,
+                icon: "{% static 'stop.png' %}",
+                map: map,
+            });
+            const college_marker = new google.maps.Marker({
+                position: SSN,
+                icon: "{% static 'college.png' %}",
+                map: map,
+            });
+
+            fetch(`/getlocation/${route}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                bus_marker = new google.maps.Marker({
+                    position: {lat: data.lat, lng: data.lng},
+                    icon: "{% static 'location.png' %}",
+                    map: map,
+                });
+            })
+
+            directionsRenderer.setMap(map);
+        };
+    </script>
+
+{% endblock %}

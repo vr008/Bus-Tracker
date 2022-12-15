@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}"></script>
+    {% block js %}
+    {% endblock %}  
+    <title>BusDood</title>
+</head>
+<body>
+    <navbar class="navbar flex">
+        <div class="logo flex">
+            <i class='bx bxs-bus display-2h'></i>
+            <h3 class="display-2h title-logo">BUSDOOD</h3>
+            <button class="ham" id="hamButton"><i class='bx bx-menu hamburger'></i></button>
+        </div>
+
+        <div class="menu" id="menu">
+            <ul class="menu-list flex">
+                <li><a href="{% url 'index' %}" class="menu-item">Home</a></li>
+                {% if user.is_authenticated %}
+                    {% if user.user_type != 'inc' %}
+                        <li><a href="{% url 'tracker' %}" class="menu-item">Track</a></li>
+                        <li><a href="{% url 'routes' %}" class="menu-item">Routes</a></li>
+                    {% endif %}
+                    {% if user.user_type != 'day' %}
+                        <li><a href="{% url 'bookings' %}" class=menu-item>Book</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'profile' user.username %}" class="menu-item">Profile</a></li>
+                    <li><a href="{% url 'feedback' %}" class="menu-item">Feedback</a></li>
+                    <li><a href="{% url 'logout' %}" class="menu-item">Logout</a></li>
+                    <li><a href="{% url 'announcements' %}" class="menu-item"><i class='bx bxs-bell'></i></a></li>
+
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="menu-item">Login</a></li>
+                    <li><a href="{% url 'register' %}" class="menu-item">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+    </navbar>
+
+
+    <div class="main-container">
+        {% block content %}
+        {% endblock %}
+    </div>
+    
+</body>
+</html>

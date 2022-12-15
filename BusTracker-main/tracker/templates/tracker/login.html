@@ -1,0 +1,35 @@
+{% extends 'tracker/base.html' %}
+{% block content %}
+
+    <div class="left-box">
+        <h1 class="display-2 heading-text">Login To Get Started</h1>
+    </div>
+
+    <div class="right-box">
+        <form class="form" action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-element">
+                <input type="text" name="username" class="form-control" placeholder="Username">
+            </div>
+
+            <div class="form-element">
+                <input type="password" name="password" class="form-control" placeholder="Password">
+            </div>
+
+            <div class="form-element">
+                {% if message %}
+                    <p class="error">{{ message }}</p>
+                {% endif %}
+            </div>
+
+            <div class="form-element">
+                <button class="btn submit-btn" type="submit">Login</button>
+            </div>
+
+            <div class="form-element">
+                <p class="help-text">Don't have an account?<a class="help-links" href="{% url 'register' %}"> Register here</a></p>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'tracker/base.html' %}
+
+
+{% block content %}
+    <form class="form big" action="{% url 'addfeedback' %}" method="POST">
+        {% csrf_token %}
+
+        <div class="form-element announcement-fileds">
+            <input placeholder="Enter your name" type="text" name="title" class="form-control" required>
+        </div>
+
+        <div id="selector" class="form-element announcement-fileds">
+            <div>
+                <input type="radio" id="dayscholar" name="user_type" value="day" required>
+                <label for="dayscholar" class="white">Dayscholar</label>
+            </div>
+            
+            <div>
+                <input type="radio" id="hosteller" name="user_type" value="hos" required>
+                <label for="hosteller" class="white">Hosteller</label>
+            </div>
+            
+        </div>
+
+        <div class="form-element announcement-fileds">
+            <textarea class="form-area" name="desc" placeholder="Enter the feedback here " required></textarea>
+        </div>
+
+        <div class="form-element">
+            {% if message %}   
+                <p class="error">{{ message }}</p>
+            {% endif %}
+        </div>
+
+        <div class="form-elemet">
+            <button class="btn submit-btn" type="submit">Submit Feedback</button>                
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'tracker/base.html' %}
+{% block content %}
+
+    <div class="left-box">
+        <h1 class="display-2 heading-text">Register Here</h1>
+    </div>
+
+    <div class="right-box">
+        <form class="form" action="{% url 'register' %}" method="POST">
+            {% csrf_token %}
+
+            <div class="form-element">
+                <input placeholder="Username" type="text" name="username" class="form-control" required>
+            </div>
+
+            <div class="form-element">
+                <input placeholder="Email" type="text" name="email" class="form-control" required>
+            </div>
+
+            <div class="form-element">
+                <input placeholder="Password" type="password" name="password" class="form-control" required>
+            </div>
+
+            <div class="form-element">
+                <input placeholder="Confirm Password" type="password" name="cpassword" class="form-control" required>
+            </div>
+
+            <div class="form-element">
+                <input type="radio" id="dayscholar" name="user_type" value="day" required>
+                <label for="dayscholar" class="white">Dayscholar</label>
+                
+                <input type="radio" id="hosteller" name="user_type" value="hos" required>
+                <label for="hosteller" class="white">Hosteller</label>
+            </div>
+
+            <div class="form-element">
+                {% if message %}   
+                    <p class="error">{{ message }}</p>
+                {% endif %}
+            </div>
+
+            <div class="form-element">
+                <button class="btn submit-btn" type="submit">Register</button>                
+            </div>
+            <div class="form-element">
+                <p class="help-text">Already have an account?<a class="help-links" href="{% url 'login' %}">Login here</a></p>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

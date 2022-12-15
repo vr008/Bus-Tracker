@@ -1,0 +1,18 @@
+{% extends 'tracker/base.html' %}
+
+
+{% block content %}
+    <div class="announcements-container">
+        
+        {% for useri in users %}
+            <div class="user flex">
+                <div class="user-left-box">
+                    <p><b>{{ useri.username }}</b></p>
+                </div>
+                <div class="user-right-box">
+                    <a href="{% url 'profile' useri.username %}"><button class="btn submit-btn">View User</button></a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

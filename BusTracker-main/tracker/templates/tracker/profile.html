@@ -1,0 +1,27 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="announcements-container profile-container">
+        <div class="profile-top">
+            <div class="profile-image">
+                <img class="profile-img" src="{% static 'user.png' %}" alt="profile image">
+            </div>
+            <div class="profile-info">
+                <h2 class="display-2h">{{ user.username }}</h2>
+            </div>
+        </div>
+        <div class="profile-bottom">
+		
+            <p class="display-1"><b>{{ user.email }}</b></p>
+            <p class="display-1"><b>
+            	{% if user.user_type == 'hos' %}
+            		Hosteller
+            	{% elif user.user_type == 'day' %}
+            		Day Scholor
+            	{% elif user.user_type == 'adm' %}
+            		Admin
+            	{% endif %}
+            </p></b>
+        </div>
+    </div>
+{% endblock %}

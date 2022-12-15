@@ -1,0 +1,26 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+
+    <div class="announcements-container">
+        <h2 class="display-2h page-title">Feedback</h2>
+        {% if user.user_type == 'bus' or user.user_type == 'hos' %}
+            <a href="{% url 'addfeedback' %}"><button class="btn submit-btn announcement-btn">Add feedback</button></a>
+        {% endif %}
+        {% for feedbacks in feedback %}
+            {% if user.user_type == feedbacks.for_user or user.user_type == 'inc' %}
+               
+            <div class="announcement">
+                <p class="announcement-content"><b>Name of the student:- </b> {{ feedbacks.title }}</p>
+                    <p class="announcement-date"><b>Date:-</b>:{{ feedbacks.date }}</p>
+                    <p class="announcement-content"><b>Feedback:-</b> {{ feedbacks.description }}</p>
+                    {% if user.user_type == 'bus' or user.user_type == 'hos' %}
+                    <a href="{% url 'deletefeedback' feedbacks.id %}"><button class="btn submit-btn announcement-btn del">Delete</button></a>
+                    {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+
+{% endblock %}

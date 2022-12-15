@@ -1,0 +1,65 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+{% block js %}
+    <link rel="stylesheet" href="{% static 'routes.css' %}">
+    <script src="{% static 'routes.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="left-content">
+    {{ form.route }}
+    <br>
+    <button id="get-route" class="btn submit-btn location-btn">Get Route</button>
+</div>
+
+<div class="timeline-area">
+	<div class="container">
+		<div class="timelines">
+			<h2>Route</h2>
+		</div>
+		<div class="all-timelines">
+			<!--SINGLE TIMELINE-->
+<!-- 
+			<div class="single-timeline d-flex-2">
+				<div class="timeline-blank"></div>
+				<div class="timeline-text d-flex-2">
+					<span>
+						<h6>April 2019</h6> — The launch of Aryacoin; AYA ICO, resulting in over 30BTC collected
+					</span>
+					<div class="t-square"></div>
+				</div>
+			</div> -->
+
+		</div>
+	</div>
+    <script defer>
+        const button = document.getElementById('get-route');
+        button.onclick = () => {
+            const route = document.getElementById('routeNo').value;
+            const timeline = document.querySelector('.all-timelines');
+            timeline.innerHTML = '';
+            fetch(`/routestops/${route}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                data.waypoints.forEach((item) => {
+                    const div = document.createElement('div');
+                    div.classList.add('single-timeline');
+                    div.classList.add('d-flex-2');
+                    div.innerHTML = `
+                        <div class="timeline-blank"></div>
+                        <div class="timeline-text d-flex-2">
+                            <span>
+                                <h6>${item}</h6>
+                            </span>
+                            <div class="t-square"></div>
+                        </div>
+                    `;
+                    timeline.appendChild(div);
+                })
+                timeline.style.display = 'block';
+            })
+        }
+    </script>
+{% endblock %}
